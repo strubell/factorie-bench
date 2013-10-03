@@ -99,8 +99,8 @@
 							<id>BenchOntoBlake</id>
 							<mainClass>edu.umass.cs.iesl.strubell.BenchFactorie</mainClass>
 							<args>
-								<arg>~/canvas/data/ontonotes-en-1.1.0/dev-pmd/</arg>
-								<arg>~/canvas/data/ontonotes-en-1.1.0/trn-pmd/</arg>
+                                <arg>/home/strubell/canvas/data/ontonotes-en-1.1.0/dev-pmd/</arg>
+                                <arg>/home/strubell/canvas/data/ontonotes-en-1.1.0/trn-pmd/</arg>
 							</args>
 							<jvmArgs>
 								<jvmArg>-Xms10g</jvmArg>
