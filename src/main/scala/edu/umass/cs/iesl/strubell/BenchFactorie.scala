@@ -25,9 +25,6 @@ object BenchFactorie {
     if (args.size > 1) {
       trainDir = args(1)
     }
-    
-    trainDir = "/Users/strubell/Documents/research/data/ontotest/train/"
-    testDir = "/Users/strubell/Documents/research/data/ontotest/dev/"
 
     println("Loading file lists...")
     //var testFileList = getFileListFromDir(testDir, "pmd")
