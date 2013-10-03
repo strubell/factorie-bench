@@ -25,9 +25,13 @@ object BenchFactorie {
     if (args.size > 1) {
       trainDir = args(1)
     }
+    
+    trainDir = "/Users/strubell/Documents/research/data/ontotest/train/"
+    testDir = "/Users/strubell/Documents/research/data/ontotest/dev/"
 
     println("Loading file lists...")
-    var testFileList = getFileListFromDir(testDir, "pmd")
+    //var testFileList = getFileListFromDir(testDir, "pmd")
+    var testFileList = getFileListFromDir(testDir, "dep.2")
     var trainFileList = getFileListFromDir(trainDir, "pmd")
 
     println("Loading documents...")
@@ -41,15 +45,15 @@ object BenchFactorie {
     var numRuns = 10
     var taggerFileName = "ontonotes-vanilla.tagger"
     
-    trainPOSTagger(trainSentences, testSentences, true, taggerFileName)
+//    trainPOSTagger(trainSentences, testSentences, true, taggerFileName)
+//    
+//    val serializedTagger = new pos.POS1
+//    serializedTagger.deserialize(new File(taggerFileName))
+//    
+//    testPOSTagger(serializedTagger, testSentences, numRuns)
     
-    val serializedTagger = new pos.POS1
-    serializedTagger.deserialize(new File(taggerFileName))
-    
-    testPOSTagger(serializedTagger, testSentences, numRuns)
-    
-    //testNER(ontoTrainDocs, WSJTestDocs, numRuns)
-    //testDP(ontoTrainDocs, ontoTestDocs, numRuns) 
+    testNER(testDocs, numRuns)
+    //testDP(testSentences, numRuns) 
   }
 
   /**
@@ -89,7 +93,7 @@ object BenchFactorie {
 	println("Token accuracy: " + tokAccuracy)
   }
 
-  def testNER(trainDocs: Seq[Document], testDocs: Seq[Document], numRuns: Integer) = {
+  def testNER(testDocs: Seq[Document], numRuns: Integer) = {
 
     val namedent = ner.NER3
 
@@ -98,30 +102,30 @@ object BenchFactorie {
     var tokSpeedTotal = 0.0
     for (i <- 1 to numRuns) {
       implicit val rng = new scala.util.Random(RANDOM_SEED)
-//      namedent.printEvaluation(testDocs)
-//      val (accuracy, sentPerSec, tokPerSec) = namedent.detailedAccuracy(testDocs)
-//      sentSpeedTotal += sentPerSec
-//      tokSpeedTotal += tokPerSec
-//      println("accuracy: " + accuracy)
-//      println("Sentences/sec: " + sentPerSec)
-//      println("Tokens/sec: " + tokPerSec)
-//      println()
+      namedent.printEvaluation(testDocs)
+      val (sentPerSec, tokPerSec) = namedent.detailedAccuracy(testDocs)
+      sentSpeedTotal += sentPerSec
+      tokSpeedTotal += tokPerSec
+      //println("accuracy: " + accuracy)
+      println("Sentences/sec: " + sentPerSec)
+      println("Tokens/sec: " + tokPerSec)
+      println()
     }
-//    println("Average speed over " + numRuns + " trials: " + sentSpeedTotal/numRums + " sents/sec " + tokSpeedTotal + "toks/sec")
+    println("Average speed over " + numRuns + " trials: " + sentSpeedTotal/numRuns + " sents/sec " + tokSpeedTotal + "toks/sec")
   }
 
-  def testDP(trainSentences: Seq[Sentence], testSentences: Seq[Sentence], numRuns: Integer) = {
+  def testDP(testSentences: Seq[Sentence], numRuns: Integer) = {
     
     val dp = parse.DepParser1Ontonotes 
 
     println("Testing dependency parser...")
     for (i <- 1 to numRuns) {
       implicit val rng = new scala.util.Random(RANDOM_SEED)
-//      val(las, uas, sentPerSec, tokPerSec) = dp.testSingle(testSentences)
-//      println("LAS: " + las)
-//      println("UAS: " + uas)
-//      println("Sentences/sec: " + sentPerSec)
-//      println("Tokens/sec: " + tokPerSec)
+      val(las, uas, sentPerSec, tokPerSec) = dp.testSingle(testSentences)
+      println("LAS: " + las)
+      println("UAS: " + uas)
+      println("Sentences/sec: " + sentPerSec)
+      println("Tokens/sec: " + tokPerSec)
     }
   }
 
