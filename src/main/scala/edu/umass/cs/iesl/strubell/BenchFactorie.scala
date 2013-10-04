@@ -27,9 +27,10 @@ object BenchFactorie {
     }
 
     println("Loading file lists...")
-    //var testFileList = getFileListFromDir(testDir, "pmd")
-    var testFileList = getFileListFromDir(testDir, "dep.2")
+    var testFileList = getFileListFromDir(testDir, "pmd")
     var trainFileList = getFileListFromDir(trainDir, "pmd")
+    //var testFileList = getFileListFromDir(testDir, "dep.2")
+
 
     println("Loading documents...")
     val testDocs = testFileList.map(LoadOntonotes5.fromFilename(_).head)
@@ -45,12 +46,14 @@ object BenchFactorie {
 //    trainPOSTagger(trainSentences, testSentences, true, taggerFileName)
 //    
 //    val serializedTagger = new pos.POS1
+//    println("Deserializing POS tagger...")
 //    serializedTagger.deserialize(new File(taggerFileName))
 //    
 //    testPOSTagger(serializedTagger, testSentences, numRuns)
     
-    testNER(testDocs, numRuns)
-    //testDP(testSentences, numRuns) 
+    //testNER(testDocs, numRuns)
+    val dp = trainDP(trainSentences, testSentences)
+    testDP(dp, testSentences, numRuns) 
   }
 
   /**
@@ -69,7 +72,18 @@ object BenchFactorie {
 	  println("Serializing POS1 tagger to file " + saveName + " ...")
 	  tagger.serialize(saveName)
     }
-    tagger
+  }
+  
+  def trainDP(trainSentences: Seq[Sentence], testSentences: Seq[Sentence], serialize: Boolean = false, saveName: String = DEFAULT_TAGGER_SAVENAME): parse.DepParser1 = {
+    val dp = new parse.DepParser1
+    println("Training DepParser1 model...")
+    implicit val rng = new scala.util.Random(RANDOM_SEED)
+    dp.train(trainSentences, testSentences)
+    if(serialize){
+	  println("Serializing DepParser1 model to file " + saveName + " ...")
+	  //dp.serialize(saveName)
+    }
+    dp
   }
 
   def testPOSTagger(tagger: pos.POS1, testSentences: Seq[Sentence], numRuns: Integer) = {
@@ -111,9 +125,7 @@ object BenchFactorie {
     println("Average speed over " + numRuns + " trials: " + sentSpeedTotal/numRuns + " sents/sec " + tokSpeedTotal + "toks/sec")
   }
 
-  def testDP(testSentences: Seq[Sentence], numRuns: Integer) = {
-    
-    val dp = parse.DepParser1Ontonotes 
+  def testDP(dp: parse.DepParser1, testSentences: Seq[Sentence], numRuns: Integer) = {
 
     println("Testing dependency parser...")
     for (i <- 1 to numRuns) {
@@ -129,7 +141,7 @@ object BenchFactorie {
   /**
    * Returns a list of the file names of files with the given ending under the given directory
    */
-  def getFileListFromDir(fileName: String, ending: String): Seq[String] = {
+  def getFileListFromDir(fileName: String, ending: String=""): Seq[String] = {
     val dir = new File(fileName)
     println("Getting file list from directory: " + fileName)
     if (dir != null) {
