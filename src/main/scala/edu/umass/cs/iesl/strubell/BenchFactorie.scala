@@ -6,6 +6,7 @@ import cc.factorie._
 import cc.factorie.app.nlp._
 import cc.factorie.app.nlp.load._
 import scala.io._
+import cc.factorie.app.nlp.ner._
 
 object BenchFactorie {
 
@@ -43,17 +44,20 @@ object BenchFactorie {
     var numRuns = 10
     var taggerFileName = "ontonotes-vanilla.tagger"
     
-//    trainPOSTagger(trainSentences, testSentences, true, taggerFileName)
-//    
-//    val serializedTagger = new pos.POS1
-//    println("Deserializing POS tagger...")
-//    serializedTagger.deserialize(new File(taggerFileName))
-//    
-//    testPOSTagger(serializedTagger, testSentences, numRuns)
+    //trainPOSTagger(trainSentences, testSentences, true, taggerFileName)
     
-    //testNER(testDocs, numRuns)
-    val dp = trainDP(trainSentences, testSentences)
-    testDP(dp, testSentences, numRuns) 
+    val serializedTagger = pos.POS1Ontonotes //new pos.POS1
+    //println("Deserializing POS tagger...")
+    //serializedTagger.deserialize(new File(taggerFileName))
+    
+    testPOSTagger(serializedTagger, testSentences, numRuns)
+    
+    //val namedent = ner.NER3
+    //testNER(namedent, testDocs, numRuns)
+    
+    //val dp = trainDP(trainSentences, testSentences)
+    //val dp = parse.DepParser1Ontonotes
+    //testDP(dp, testSentences, numRuns) 
   }
 
   /**
@@ -92,7 +96,7 @@ object BenchFactorie {
 	var sentAccuracy = 0.0
     for (i <- 1 to numRuns) {
       implicit val rng = new scala.util.Random(RANDOM_SEED)
-      var(tokenAccuracy, sentenceAccuracy, speed) = tagger.detailedAccuracy(testSentences)
+      var(tokenAccuracy, sentenceAccuracy, speed, tokens) = tagger.detailedAccuracy(testSentences)
       tokSpeedTotal += speed
       if(i == numRuns){
     	tokAccuracy = tokenAccuracy
@@ -104,23 +108,21 @@ object BenchFactorie {
 	println("Token accuracy: " + tokAccuracy)
   }
 
-  def testNER(testDocs: Seq[Document], numRuns: Integer) = {
-
-    val namedent = ner.NER3
+  def testNER(namedent: ner.NER3[BilouConllNerLabel], testDocs: Seq[Document], numRuns: Integer) = {
 
     println("Testing named entity recognition...")
     var sentSpeedTotal = 0.0
     var tokSpeedTotal = 0.0
     for (i <- 1 to numRuns) {
       implicit val rng = new scala.util.Random(RANDOM_SEED)
-      namedent.printEvaluation(testDocs)
-      val (sentPerSec, tokPerSec) = namedent.detailedAccuracy(testDocs)
-      sentSpeedTotal += sentPerSec
-      tokSpeedTotal += tokPerSec
-      //println("accuracy: " + accuracy)
-      println("Sentences/sec: " + sentPerSec)
-      println("Tokens/sec: " + tokPerSec)
-      println()
+//      namedent.printEvaluation(testDocs)
+//      var (sentPerSec, tokPerSec) = namedent.detailedAccuracy(testDocs)
+//      sentSpeedTotal += sentPerSec
+//      tokSpeedTotal += tokPerSec
+//      //println("accuracy: " + accuracy)
+//      println("Sentences/sec: " + sentPerSec)
+//      println("Tokens/sec: " + tokPerSec)
+//      println()
     }
     println("Average speed over " + numRuns + " trials: " + sentSpeedTotal/numRuns + " sents/sec " + tokSpeedTotal + "toks/sec")
   }
@@ -130,7 +132,7 @@ object BenchFactorie {
     println("Testing dependency parser...")
     for (i <- 1 to numRuns) {
       implicit val rng = new scala.util.Random(RANDOM_SEED)
-      val(las, uas, sentPerSec, tokPerSec) = dp.testSingle(testSentences)
+      var(las, uas, sentPerSec, tokPerSec, tokens) = dp.test(testSentences)
       println("LAS: " + las)
       println("UAS: " + uas)
       println("Sentences/sec: " + sentPerSec)
