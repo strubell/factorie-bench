@@ -46,7 +46,7 @@ object BenchFactorie {
     
     //trainPOSTagger(trainSentences, testSentences, true, taggerFileName)
     
-    val serializedTagger = pos.POS1Ontonotes //new pos.POS1
+    val serializedTagger = pos.ForwardPOS-Ontonotes //new pos.POS1
     //println("Deserializing POS tagger...")
     //serializedTagger.deserialize(new File(taggerFileName))
     
@@ -68,29 +68,29 @@ object BenchFactorie {
    * @param saveName filename to save the tagger to if serializing
    */
   def trainPOSTagger(trainSentences: Seq[Sentence], testSentences: Seq[Sentence], serialize: Boolean = false, saveName: String = DEFAULT_TAGGER_SAVENAME) {
-    val tagger = new pos.POS1
-    println("Training POS1 tagger...")
+    val tagger = new pos.ForwardPOSTagger
+    println("Training ForwardPOSTagger...")
     implicit val rng = new scala.util.Random(RANDOM_SEED)
     tagger.train(trainSentences, testSentences)
     if(serialize){
-	  println("Serializing POS1 tagger to file " + saveName + " ...")
+	  println("Serializing ForwardPOSTagger to file " + saveName + " ...")
 	  tagger.serialize(saveName)
     }
   }
   
   def trainDP(trainSentences: Seq[Sentence], testSentences: Seq[Sentence], serialize: Boolean = false, saveName: String = DEFAULT_TAGGER_SAVENAME): parse.DepParser1 = {
-    val dp = new parse.DepParser1
-    println("Training DepParser1 model...")
+    val dp = new parse.TransitionParser
+    println("Training TransitionParser model...")
     implicit val rng = new scala.util.Random(RANDOM_SEED)
     dp.train(trainSentences, testSentences)
     if(serialize){
-	  println("Serializing DepParser1 model to file " + saveName + " ...")
+	  println("Serializing TransitionParser model to file " + saveName + " ...")
 	  //dp.serialize(saveName)
     }
     dp
   }
 
-  def testPOSTagger(tagger: pos.POS1, testSentences: Seq[Sentence], numRuns: Integer) = {
+  def testPOSTagger(tagger: pos.ForwardPOSTagger, testSentences: Seq[Sentence], numRuns: Integer) = {
 	var tokSpeedTotal = 0.0
 	var tokAccuracy = 0.0
 	var sentAccuracy = 0.0
@@ -108,7 +108,7 @@ object BenchFactorie {
 	println("Token accuracy: " + tokAccuracy)
   }
 
-  def testNER(namedent: ner.NER3[BilouConllNerLabel], testDocs: Seq[Document], numRuns: Integer) = {
+  def testNER(namedent: ner.StackedNER[BilouConllNerLabel], testDocs: Seq[Document], numRuns: Integer) = {
 
     println("Testing named entity recognition...")
     var sentSpeedTotal = 0.0
@@ -127,16 +127,16 @@ object BenchFactorie {
     println("Average speed over " + numRuns + " trials: " + sentSpeedTotal/numRuns + " sents/sec " + tokSpeedTotal + "toks/sec")
   }
 
-  def testDP(dp: parse.DepParser1, testSentences: Seq[Sentence], numRuns: Integer) = {
+  def testDP(dp: parse.TransitionParser, testSentences: Seq[Sentence], numRuns: Integer) = {
 
     println("Testing dependency parser...")
     for (i <- 1 to numRuns) {
       implicit val rng = new scala.util.Random(RANDOM_SEED)
-      var(las, uas, sentPerSec, tokPerSec, tokens) = dp.test(testSentences)
-      println("LAS: " + las)
-      println("UAS: " + uas)
-      println("Sentences/sec: " + sentPerSec)
-      println("Tokens/sec: " + tokPerSec)
+//      var(las, uas, sentPerSec, tokPerSec, tokens) = dp.test(testSentences)
+//      println("LAS: " + las)
+//      println("UAS: " + uas)
+//      println("Sentences/sec: " + sentPerSec)
+//      println("Tokens/sec: " + tokPerSec)
     }
   }
 
