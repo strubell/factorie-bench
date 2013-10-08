@@ -1,10 +1,10 @@
 #!/bin/bash
 #
 # Train a Factorie ForwardPOSTagger using WSJ training data
+# Specify directory containing data (ontonotes-en-1.1.0) as command line parameter
 #
 
-HOME="/Users/strubell"
-DATA="/Users/strubell/Documents/research/data"
+DATA=$1
 MEMORY=4g
 MODELNAME="ForwardPOSTagger-WSJ.factorie"
 
