@@ -169,7 +169,7 @@ object BenchNER{
 
     val conllTestFile = args(0)
     var numRuns = 10
-    val conllTestDoc = LoadConll2003.fromFilename(conllTestFile)
+    val conllTestDoc = LoadConll2003(BILOU=true).fromFilename(conllTestFile)
     testNER(conllTestDoc, numRuns)
     
     //val dp = trainDP(trainSentences, testSentences)
