@@ -2,11 +2,13 @@ package edu.umass.cs.iesl.strubell
 
 import edu.stanford.nlp.tagger.maxent.MaxentTagger
 import java.io.File
+import java.net.URL
 import cc.factorie._
 import cc.factorie.app.nlp._
 import cc.factorie.app.nlp.load._
 import scala.io._
 import cc.factorie.app.nlp.ner._
+import cc.factorie.app.nlp.embeddings._
 
 object BenchPOS {
 
@@ -33,7 +35,10 @@ object BenchPOS {
     //val tagger = pos.ForwardPOSTagger
     
     // Ontonotes tagger
-    val tagger = pos.ForwardPOSTaggerOntonotes
+    //val tagger = pos.ForwardPOSTaggerOntonotes
+    val taggerLoc = "/Users/strubell/Documents/research/factorie/src/main/resources/cc/factorie/app/nlp/pos/ForwardPOSTagger-WSJ.factorie"
+    val tagger = new pos.ForwardPOSTagger
+    tagger.deserialize(new java.io.File(taggerLoc))
 
     println("Loading file lists...")
     var testFileList = getFileListFromDir(testDir, "pmd")
@@ -178,7 +183,9 @@ object BenchNER{
   }
   
     def testNER(testDocs: Seq[Document], numRuns: Integer) = {
-	val namedent = ner.StackedConllNER
+    	val modelLoc = new java.net.URL("file:///Users/strubell/Documents/research/factorie/src/main/resources/cc/factorie/app/nlp/ner/StackedNER.factorie")
+	val namedent = new ner.StackedConllNER(SkipGramEmbedding, 100, 1.0, true, modelLoc)
+	//namedent.deSerialize(modelLoc)
     println("Testing named entity recognition...")
     var sentSpeedTotal = 0.0
     var tokSpeedTotal = 0.0
