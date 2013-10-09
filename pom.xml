@@ -143,8 +143,8 @@
 							<mainClass>edu.umass.cs.iesl.strubell.BenchPOS</mainClass>
 							<args>
 								<arg>wsj</arg>
-                                <arg>/home/strubell/canvas/data/wsj/test/</arg>
-                                <arg>/home/strubell/canvas/data/wsj/train/</arg>
+                                <arg>/home/strubell/canvas/data/wsj-pos/test/</arg>
+                                <arg>/home/strubell/canvas/data/wsj-pos/train/</arg>
 							</args>
 							<jvmArgs>
 								<jvmArg>-Xms10g</jvmArg>
@@ -156,8 +156,8 @@
 							<mainClass>edu.umass.cs.iesl.strubell.BenchPOS</mainClass>
 							<args>
 								<arg>wsj</arg>
-                                <arg>/Users/strubell/Documents/research/data/wsj/test/</arg>
-                                <arg>/Users/strubell/Documents/research/data/wsj/train/</arg>
+                                <arg>/Users/strubell/Documents/research/data/wsj-pos/test/</arg>
+                                <arg>/Users/strubell/Documents/research/data/wsj-pos/train/</arg>
 							</args>
 							<jvmArgs>
 								<jvmArg>-Xms4g</jvmArg>
