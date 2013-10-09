@@ -87,9 +87,10 @@
 				<configuration>
 					<launchers>
 						<launcher>
-							<id>BenchOntoSinger</id>
-							<mainClass>edu.umass.cs.iesl.strubell.BenchFactorie</mainClass>
+							<id>BenchPOSOntoSinger</id>
+							<mainClass>edu.umass.cs.iesl.strubell.BenchPOS</mainClass>
 							<args>
+								<arg>onto</arg>
 								<arg>/Users/strubell/Documents/research/data/ontonotes-en-1.1.0/dev-pmd/</arg>
 								<arg>/Users/strubell/Documents/research/data/ontonotes-en-1.1.0/trn-pmd/</arg>
 							</args>
@@ -99,9 +100,10 @@
 							</jvmArgs>
 						</launcher>
 						<launcher>
-							<id>BenchOntoBlake</id>
-							<mainClass>edu.umass.cs.iesl.strubell.BenchFactorie</mainClass>
+							<id>BenchPOSOntoBlake</id>
+							<mainClass>edu.umass.cs.iesl.strubell.BenchPOS</mainClass>
 							<args>
+								<arg>onto</arg>
                                 <arg>/home/strubell/canvas/data/ontonotes-en-1.1.0/dev-pmd/</arg>
                                 <arg>/home/strubell/canvas/data/ontonotes-en-1.1.0/trn-pmd/</arg>
 							</args>
@@ -111,9 +113,10 @@
 							</jvmArgs>
 						</launcher>
 						<launcher>
-							<id>BenchOntoSingerTest</id>
-							<mainClass>edu.umass.cs.iesl.strubell.BenchFactorie</mainClass>
+							<id>BenchPOSOntoSingerTest</id>
+							<mainClass>edu.umass.cs.iesl.strubell.BenchPOS</mainClass>
 							<args>
+								<arg>onto</arg>
                                 <arg>/Users/strubell/Documents/research/data/ontotest/dev/</arg>
                                 <arg>/Users/strubell/Documents/research/data/ontotest/train/</arg>
 							</args>
@@ -123,15 +126,64 @@
 							</jvmArgs>
 						</launcher>
 						<launcher>
-							<id>BenchOntoBlakeTest</id>
-							<mainClass>edu.umass.cs.iesl.strubell.BenchFactorie</mainClass>
+							<id>BenchPOSOntoBlakeTest</id>
+							<mainClass>edu.umass.cs.iesl.strubell.BenchPOS</mainClass>
 							<args>
+								<arg>onto</arg>
                                 <arg>/home/strubell/canvas/data/ontotest/dev/</arg>
                                 <arg>/home/strubell/canvas/data/ontotest/train/</arg>
 							</args>
 							<jvmArgs>
 								<jvmArg>-Xms10g</jvmArg>
 								<jvmArg>-Xmx10g</jvmArg>
+							</jvmArgs>
+						</launcher>
+						<launcher>
+							<id>BenchPOSWSJBlake</id>
+							<mainClass>edu.umass.cs.iesl.strubell.BenchPOS</mainClass>
+							<args>
+								<arg>wsj</arg>
+                                <arg>/home/strubell/canvas/data/wsj/test/</arg>
+                                <arg>/home/strubell/canvas/data/wsj/train/</arg>
+							</args>
+							<jvmArgs>
+								<jvmArg>-Xms10g</jvmArg>
+								<jvmArg>-Xmx10g</jvmArg>
+							</jvmArgs>
+						</launcher>
+						<launcher>
+							<id>BenchPOSWSJSinger</id>
+							<mainClass>edu.umass.cs.iesl.strubell.BenchPOS</mainClass>
+							<args>
+								<arg>wsj</arg>
+                                <arg>/Users/strubell/Documents/research/data/wsj/test/</arg>
+                                <arg>/Users/strubell/Documents/research/data/wsj/train/</arg>
+							</args>
+							<jvmArgs>
+								<jvmArg>-Xms4g</jvmArg>
+								<jvmArg>-Xmx4g</jvmArg>
+							</jvmArgs>
+						</launcher>
+						<launcher>
+							<id>BenchNERConllTestABlake</id>
+							<mainClass>edu.umass.cs.iesl.strubell.BenchNER</mainClass>
+							<args>
+                                <arg>/home/strubell/canvas/data/conll2003/eng.testa</arg>
+							</args>
+							<jvmArgs>
+								<jvmArg>-Xms10g</jvmArg>
+								<jvmArg>-Xmx10g</jvmArg>
+							</jvmArgs>
+						</launcher>
+						<launcher>
+							<id>BenchNERConllTestASinger</id>
+							<mainClass>edu.umass.cs.iesl.strubell.BenchNER</mainClass>
+							<args>
+                                <arg>/Users/strubell/Documents/research/data/conll2003/eng.testa</arg>
+							</args>
+							<jvmArgs>
+								<jvmArg>-Xms4g</jvmArg>
+								<jvmArg>-Xmx4g</jvmArg>
 							</jvmArgs>
 						</launcher>
 					</launchers>
