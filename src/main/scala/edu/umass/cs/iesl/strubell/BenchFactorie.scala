@@ -30,7 +30,10 @@ object BenchPOS {
 //    }
   
     // WSJ tagger
-    val tagger = pos.ForwardPOSTagger
+    //val tagger = pos.ForwardPOSTagger
+    
+    // Ontonotes tagger
+    val tagger = pos.ForwardPOSTaggerOntonotes
 
     println("Loading file lists...")
     var testFileList = getFileListFromDir(testDir, "pmd")
@@ -166,7 +169,7 @@ object BenchNER{
 
     val conllTestFile = args(0)
     var numRuns = 10
-    val conllTestDoc = Seq(LoadConll2003.fromFilename(conllTestFile).head)
+    val conllTestDoc = List(LoadConll2003.fromFilename(conllTestFile).head)
     testNER(conllTestDoc, numRuns)
     
     //val dp = trainDP(trainSentences, testSentences)
