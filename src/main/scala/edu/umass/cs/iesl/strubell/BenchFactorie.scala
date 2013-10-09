@@ -188,19 +188,28 @@ object BenchNER{
 	val namedent = new ner.StackedConllNER(SkipGramEmbedding, 100, 1.0, true, modelURL)
 	//namedent.deSerialize(modelLoc)
     println("Testing named entity recognition...")
-    var sentSpeedTotal = 0.0
-    var tokSpeedTotal = 0.0
-    for (i <- 1 to numRuns) {
-      implicit val rng = new scala.util.Random(RANDOM_SEED)
-      namedent.printEvaluation(testDocs)
-      var (sentPerSec, tokPerSec) = namedent.detailedAccuracy(testDocs)
-      sentSpeedTotal = sentSpeedTotal + sentPerSec
-      tokSpeedTotal = tokSpeedTotal + tokPerSec
-      //println("accuracy: " + accuracy)
-      println("Sentences/sec: " + sentPerSec)
-      println("Tokens/sec: " + tokPerSec)
-      println()
-    }
-    println("Average speed over " + numRuns + " trials: " + sentSpeedTotal/numRuns + " sents/sec " + tokSpeedTotal + "toks/sec")
+    
+    // throw away first one
+    namedent.detailedAccuracy(testDocs)
+    
+    var results = for(i <- 1 to numRuns) yield {namedent.detailedAccuracy(testDocs)}
+    
+    var tokSpeed = results.map(_._1).sum/numRuns
+    var sentSpeed = results.map(_._2).sum/numRuns
+    
+//    var sentSpeedTotal = 0.0
+//    var tokSpeedTotal = 0.0
+//    for (i <- 1 to numRuns) {
+//      implicit val rng = new scala.util.Random(RANDOM_SEED)
+//      namedent.printEvaluation(testDocs)
+//      var (sentPerSec, tokPerSec) = namedent.detailedAccuracy(testDocs)
+//      sentSpeedTotal = sentSpeedTotal + sentPerSec
+//      tokSpeedTotal = tokSpeedTotal + tokPerSec
+//      //println("accuracy: " + accuracy)
+//      println("Sentences/sec: " + sentPerSec)
+//      println("Tokens/sec: " + tokPerSec)
+//      println()
+//    }
+    println("Average speed over " + numRuns + " trials: " + sentSpeed + " sents/sec " + tokSpeed + "toks/sec")
   }
 }
