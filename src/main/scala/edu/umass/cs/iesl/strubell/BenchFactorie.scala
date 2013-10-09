@@ -173,18 +173,19 @@ object BenchNER{
    def main(args: Array[String]) {
 
     val conllTestFile = args(0)
+    val modelLoc = args(1)
     var numRuns = 10
     val conllTestDoc = LoadConll2003(BILOU=true).fromFilename(conllTestFile)
-    testNER(conllTestDoc, numRuns)
+    testNER(modelLoc, conllTestDoc, numRuns)
     
     //val dp = trainDP(trainSentences, testSentences)
     //val dp = parse.DepParser1Ontonotes
     //testDP(dp, testSentences, numRuns) 
   }
   
-    def testNER(testDocs: Seq[Document], numRuns: Integer) = {
-    	val modelLoc = new java.net.URL("file:///Users/strubell/Documents/research/factorie/src/main/resources/cc/factorie/app/nlp/ner/StackedNER.factorie")
-	val namedent = new ner.StackedConllNER(SkipGramEmbedding, 100, 1.0, true, modelLoc)
+    def testNER(modelLoc: String, testDocs: Seq[Document], numRuns: Integer) = {
+    	val modelURL = new java.net.URL("file://"+modelLoc)
+	val namedent = new ner.StackedConllNER(SkipGramEmbedding, 100, 1.0, true, modelURL)
 	//namedent.deSerialize(modelLoc)
     println("Testing named entity recognition...")
     var sentSpeedTotal = 0.0
