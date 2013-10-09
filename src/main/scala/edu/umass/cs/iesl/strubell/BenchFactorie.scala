@@ -51,8 +51,8 @@ object BenchPOS {
 
     
     var taggerFileName = "ontonotes-vanilla.tagger"
-    if(whichTagger == None)
-    	trainPOSTagger(trainSentences, testSentences, true, taggerFileName)
+    //if(whichTagger == None)
+    //	trainPOSTagger(trainSentences, testSentences, true, taggerFileName)
     
     //println("Deserializing POS tagger...")
     //serializedTagger.deserialize(new File(taggerFileName))
@@ -169,7 +169,7 @@ object BenchNER{
 
     val conllTestFile = args(0)
     var numRuns = 10
-    val conllTestDoc = List(LoadConll2003.fromFilename(conllTestFile).head)
+    val conllTestDoc = LoadConll2003.fromFilename(conllTestFile)
     testNER(conllTestDoc, numRuns)
     
     //val dp = trainDP(trainSentences, testSentences)
