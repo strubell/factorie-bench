@@ -194,8 +194,8 @@ object BenchNER{
     
     var results = for(i <- 1 to numRuns) yield {namedent.detailedAccuracy(testDocs)}
     
-    var tokSpeed = results.map(_._1).sum/numRuns
-    var sentSpeed = results.map(_._2).sum/numRuns
+    var sentSpeed = results.map(_._1).sum/numRuns
+    var tokSpeed = results.map(_._2).sum/numRuns
     
 //    var sentSpeedTotal = 0.0
 //    var tokSpeedTotal = 0.0
