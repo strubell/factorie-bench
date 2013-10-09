@@ -29,6 +29,7 @@ object BenchPOS {
 //	    }
 //    }
   
+    // WSJ tagger
     val tagger = pos.ForwardPOSTagger
 
     println("Loading file lists...")
