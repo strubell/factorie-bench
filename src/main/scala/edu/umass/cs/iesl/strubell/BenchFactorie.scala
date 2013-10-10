@@ -184,12 +184,13 @@ object BenchNER{
   }
   
     def testNER(modelLoc: String, testDocs: Seq[Document], numRuns: Integer) = {
-    	val modelURL = new java.net.URL("file://"+modelLoc)
+    val modelURL = new java.net.URL("file://"+modelLoc)
 	val namedent = new ner.StackedConllNER(SkipGramEmbedding, 100, 1.0, true, modelURL)
 	//namedent.deSerialize(modelLoc)
     println("Testing named entity recognition...")
     
     // throw away first one
+    testDocs.foreach(namedent.process)
     namedent.detailedAccuracy(testDocs)
     
     var results = for(i <- 1 to numRuns) yield {namedent.detailedAccuracy(testDocs)}
