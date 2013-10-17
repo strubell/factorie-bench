@@ -31,7 +31,7 @@ object BenchPOS {
     val testDocs = testFileList.map(LoadOntonotes5.fromFilename(_).head)
 
     println("Getting sentences from documents...")
-    val testSentences = testDocs.map(_.sentences).flatten
+    val testSentences = testDocs.flatMap(_.sentences)
 
     var numRuns = 10
 
@@ -41,7 +41,7 @@ object BenchPOS {
     var tokAccuracy = results.map(_._1).sum / numRuns
     var sentAccuracy = results.map(_._2).sum / numRuns
 
-    println("Average speed over " + numRuns + " trials: " + tokSpeed + "toks/sec")
+    println("Average speed over " + numRuns + " trials: " + tokSpeed + " toks/sec")
     println("Sentence accuracy: " + sentAccuracy)
     println("Token accuracy: " + tokAccuracy)
   }
@@ -91,8 +91,8 @@ object BenchNER {
     println("Testing named entity recognition...")
 
     // throw away first one
-    testDocs.foreach(namedent.process)
-    namedent.test(testDocs)
+    //testDocs.foreach(namedent.process)
+    //namedent.test(testDocs)
 
     var results = for (i <- 1 to numRuns) yield { namedent.test(testDocs) }
 
@@ -100,7 +100,7 @@ object BenchNER {
     var tokSpeed = results.map(_._2).sum / numRuns
     var f1 = results.map(_._3).sum / numRuns
 
-    println("Average speed over " + numRuns + " trials: " + sentSpeed + " sents/sec " + tokSpeed + "toks/sec")
+    println("Average speed over " + numRuns + " trials: " + sentSpeed + " sents/sec " + tokSpeed + " toks/sec")
     println("F1: " + f1)
   }
 }
