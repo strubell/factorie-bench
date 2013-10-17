@@ -9,6 +9,7 @@ import cc.factorie.app.nlp.load._
 import scala.io._
 import cc.factorie.app.nlp.ner._
 import cc.factorie.app.nlp.embeddings._
+import cc.factorie.util.FileUtils
 
 object BenchPOS {
 
@@ -25,7 +26,7 @@ object BenchPOS {
     tagger.deserialize(new java.io.File(modelLoc))
 
     println("Loading file lists...")
-    var testFileList = getFileListFromDir(testDir, "pmd")
+    var testFileList = FileUtils.getFileListFromDir(testDir, "pmd")
 
     println("Loading documents...")
     val testDocs = testFileList.map(LoadOntonotes5.fromFilename(_).head)
@@ -44,20 +45,6 @@ object BenchPOS {
     println("Average speed over " + numRuns + " trials: " + tokSpeed + " toks/sec")
     println("Sentence accuracy: " + sentAccuracy)
     println("Token accuracy: " + tokAccuracy)
-  }
-
-  /**
-   * Returns a list of the file names of files with the given ending under the given directory
-   */
-  def getFileListFromDir(fileName: String, ending: String = ""): Seq[String] = {
-    val dir = new File(fileName)
-    println("Getting file list from directory: " + fileName)
-    if (dir != null) {
-      dir.listFiles.filter(_.getName.endsWith(ending)).map(_.getAbsolutePath)
-    } else {
-      println("Directory not found: " + fileName)
-      null
-    }
   }
 
   /**
@@ -81,11 +68,10 @@ object BenchNER {
     val modelLoc = args(0)
     val conllTestFile = args(1)
     var numRuns = 10
-    val conllTestDoc = LoadConll2003(BILOU = true).fromFilename(conllTestFile)
-    testNER(modelLoc, conllTestDoc, numRuns)
+    testNER(modelLoc, Seq(conllTestFile), numRuns)
   }
 
-  def testNER(modelLoc: String, testDocs: Seq[Document], numRuns: Integer) = {
+  def testNER(modelLoc: String, testFiles: Seq[String], numRuns: Integer) = {
     val modelURL = new java.net.URL("file://" + modelLoc)
     val namedent = new ner.StackedConllNER(SkipGramEmbedding, 100, 1.0, true, modelURL)
     println("Testing named entity recognition...")
@@ -94,7 +80,7 @@ object BenchNER {
     //testDocs.foreach(namedent.process)
     //namedent.test(testDocs)
 
-    var results = for (i <- 1 to numRuns) yield { namedent.test(testDocs) }
+    var results = for (i <- 1 to numRuns) yield { namedent.test(testFiles.flatMap(LoadConll2003(BILOU = true).fromFilename(_))) }
 
     var sentSpeed = results.map(_._1).sum / numRuns
     var tokSpeed = results.map(_._2).sum / numRuns
