@@ -17,27 +17,21 @@ object BenchPOS {
 
   def main(args: Array[String]) {
 
-    var whichTagger = args(0)
+    var modelLoc = args(0)
     var testDir = args(1)
-    var trainDir = args(2)
 
     println("Loading tagger...")
-    val taggerLoc = args(1)
     val tagger = new pos.ForwardPOSTagger
-    tagger.deserialize(new java.io.File(taggerLoc))
+    tagger.deserialize(new java.io.File(modelLoc))
 
     println("Loading file lists...")
     var testFileList = getFileListFromDir(testDir, "pmd")
-    var trainFileList = getFileListFromDir(trainDir, "pmd")
-    //var testFileList = getFileListFromDir(testDir, "dep.2")
 
     println("Loading documents...")
     val testDocs = testFileList.map(LoadOntonotes5.fromFilename(_).head)
-    val trainDocs = trainFileList.map(LoadOntonotes5.fromFilename(_).head)
 
     println("Getting sentences from documents...")
     val testSentences = testDocs.map(_.sentences).flatten
-    val trainSentences = trainDocs.map(_.sentences).flatten
 
     var numRuns = 10
 
@@ -47,7 +41,7 @@ object BenchPOS {
     var tokAccuracy = results.map(_._1).sum / numRuns
     var sentAccuracy = results.map(_._2).sum / numRuns
 
-    println("Average speed over " + numRuns + " trials: " + tokSpeed)
+    println("Average speed over " + numRuns + " trials: " + tokSpeed + "toks/sec")
     println("Sentence accuracy: " + sentAccuracy)
     println("Token accuracy: " + tokAccuracy)
   }
@@ -84,8 +78,8 @@ object BenchNER {
 
   def main(args: Array[String]) {
 
-    val conllTestFile = args(0)
-    val modelLoc = args(1)
+    val modelLoc = args(0)
+    val conllTestFile = args(1)
     var numRuns = 10
     val conllTestDoc = LoadConll2003(BILOU = true).fromFilename(conllTestFile)
     testNER(modelLoc, conllTestDoc, numRuns)
@@ -117,8 +111,8 @@ object BenchDP {
 
   def main(args: Array[String]) {
 
-    val testFile = args(0)
-    val modelLoc = args(1)
+    val modelLoc = args(0)
+    val testFile = args(1)
     val testDoc = LoadOntonotes5.fromFilename(testFile)
     var numRuns = 10
     
