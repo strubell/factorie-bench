@@ -5,7 +5,7 @@
 #
 MEMORY="4g"
 
-model=$1/ForwardPOS-WSJ.factorie
+model=$1/ForwardPOSTagger-WSJ.factorie
 testData=$2/wsj-pos/test/
 logname=pos-wsj-test
 
