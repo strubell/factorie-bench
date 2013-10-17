@@ -186,6 +186,18 @@
 								<jvmArg>-Xmx4g</jvmArg>
 							</jvmArgs>
 						</launcher>
+						<launcher>
+							<id>BenchDPWSJSinger</id>
+							<mainClass>edu.umass.cs.iesl.strubell.BenchDP</mainClass>
+							<args>
+                                <arg>/Users/strubell/Documents/research/data/ontonotes-en-1.1.0/tst-pmd/nw-wsj-23.dep.pmd</arg>
+								<arg>/Users/strubell/Documents/research/factorie/src/main/resources/cc/factorie/app/nlp/parse/TransitionParser-WSJ.factorie</arg>
+							</args>
+							<jvmArgs>
+								<jvmArg>-Xms2g</jvmArg>
+								<jvmArg>-Xmx2g</jvmArg>
+							</jvmArgs>
+						</launcher>
 					</launchers>
 					<scalaVersion>${scala.version}</scalaVersion>
 				</configuration>
