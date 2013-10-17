@@ -1,11 +1,19 @@
 #!/bin/bash
 #
 # Train a Factorie TransitionParser using Onotnotes training data
+# Command line argument specifies directory containing ontonotes-en-1.1.0 data directory
 #
 
 MEMORY=48g
-MODELNAME="TransitionParser-Ontonotes.factorie"
 
+trainDir=$1"/ontonotes-en-1.1.0/trn-pmd/"
+testDir=$1"/ontonotes-en-1.1.0/tst-pmd/"
+devDir=$1"/ontonotes-en-1.1.0/dev-pmd/"
+
+MODELNAME="TransitionParser-Ontonotes.factorie"
+trainDir="--trainDir=$trainDir"
+testDir="--testDir=$testDir"
+devDir="--devDir=$devDir"
 save="--save-model"
 onto="--onto=true"
 svm="--use-svm=false"

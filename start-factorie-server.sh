@@ -2,7 +2,7 @@
 #
 #
 #
-MEMORY="4g"
+MEMORY="32g"
 
 #component="forwardposontonotes"
 component=$1
