@@ -22,21 +22,7 @@ object BenchPOS {
     var trainDir = args(2)
 
     println("Loading tagger...")
-    //    val tagger:pos.ForwardPOSTagger = {
-    //	    if(whichTagger == "onto"){
-    //	      pos.ForwardPOSTaggerOntonotes
-    //	    }
-    //	    else if(whichTagger == "wsj"){
-    //	      pos.ForwardPOSTagger
-    //	    }
-    //    }
-
-    // WSJ tagger
-    //val tagger = pos.ForwardPOSTagger
-
-    // Ontonotes tagger
-    //val tagger = pos.ForwardPOSTaggerOntonotes
-    val taggerLoc = "/Users/strubell/Documents/research/factorie/src/main/resources/cc/factorie/app/nlp/pos/ForwardPOSTagger-WSJ.factorie"
+    val taggerLoc = args(1)
     val tagger = new pos.ForwardPOSTagger
     tagger.deserialize(new java.io.File(taggerLoc))
 
@@ -53,13 +39,6 @@ object BenchPOS {
     val testSentences = testDocs.map(_.sentences).flatten
     val trainSentences = trainDocs.map(_.sentences).flatten
 
-    var taggerFileName = "ontonotes-vanilla.tagger"
-    //if(whichTagger == None)
-    //	trainPOSTagger(trainSentences, testSentences, true, taggerFileName)
-
-    //println("Deserializing POS tagger...")
-    //serializedTagger.deserialize(new File(taggerFileName))
-
     var numRuns = 10
 
     var results = for (i <- 1 to numRuns) yield { tagger.detailedAccuracy(testSentences) }
@@ -68,74 +47,9 @@ object BenchPOS {
     var tokAccuracy = results.map(_._1).sum / numRuns
     var sentAccuracy = results.map(_._2).sum / numRuns
 
-    //    var tokSpeedTotal:Double = 0.0
-    //	var tokAccuracy:Double = 0.0
-    //	var sentAccuracy:Double = 0.0
-    //    for (i <- 1 to numRuns) {
-    //      implicit val rng = new scala.util.Random(RANDOM_SEED)
-    //      var(tokenAccuracy, sentenceAccuracy, speed, tokens) = tagger.detailedAccuracy(testSentences)
-    //      tokSpeedTotal += speed
-    //      if(i == numRuns){
-    //    	tokAccuracy = tokenAccuracy
-    //    	sentAccuracy = sentenceAccuracy
-    //      }
-    //    }
     println("Average speed over " + numRuns + " trials: " + tokSpeed)
     println("Sentence accuracy: " + sentAccuracy)
     println("Token accuracy: " + tokAccuracy)
-
-    //val conllTestFile = "/Users/strubell/Documents/research/data/conll2003/eng.testa"
-    //val conllTestFile = "/Users/strubell/Documents/research/data/conll2003/testb"
-
-    //val conllTestDoc = Seq(LoadConll2003.fromFilename(conllTestFile).head)
-    //testNER(conllTestDoc, numRuns)
-
-    //val dp = trainDP(trainSentences, testSentences)
-    //val dp = parse.DepParser1Ontonotes
-    //testDP(dp, testSentences, numRuns) 
-  }
-
-  /**
-   * Train POS1 on the given training data
-   * @param trainSentences sentences to train on
-   * @param testSentences sentences to test on during training
-   * @param serialize whether to serialize the tagger
-   * @param saveName filename to save the tagger to if serializing
-   */
-  def trainPOSTagger(trainSentences: Seq[Sentence], testSentences: Seq[Sentence], serialize: Boolean = false, saveName: String = DEFAULT_TAGGER_SAVENAME) {
-    val tagger = new pos.ForwardPOSTagger
-    println("Training ForwardPOSTagger...")
-    implicit val rng = new scala.util.Random(RANDOM_SEED)
-    tagger.train(trainSentences, testSentences)
-    if (serialize) {
-      println("Serializing ForwardPOSTagger to file " + saveName + " ...")
-      tagger.serialize(saveName)
-    }
-  }
-
-  def trainDP(trainSentences: Seq[Sentence], testSentences: Seq[Sentence], serialize: Boolean = false, saveName: String = DEFAULT_TAGGER_SAVENAME): parse.TransitionParser = {
-    val dp = new parse.TransitionParser
-    println("Training TransitionParser model...")
-    implicit val rng = new scala.util.Random(RANDOM_SEED)
-    dp.train(trainSentences, testSentences)
-    if (serialize) {
-      println("Serializing TransitionParser model to file " + saveName + " ...")
-      //dp.serialize(saveName)
-    }
-    dp
-  }
-
-  def testDP(dp: parse.TransitionParser, testSentences: Seq[Sentence], numRuns: Integer) = {
-
-    println("Testing dependency parser...")
-    for (i <- 1 to numRuns) {
-      implicit val rng = new scala.util.Random(RANDOM_SEED)
-      //      var(las, uas, sentPerSec, tokPerSec, tokens) = dp.test(testSentences)
-      //      println("LAS: " + las)
-      //      println("UAS: " + uas)
-      //      println("Sentences/sec: " + sentPerSec)
-      //      println("Tokens/sec: " + tokPerSec)
-    }
   }
 
   /**
@@ -175,28 +89,25 @@ object BenchNER {
     var numRuns = 10
     val conllTestDoc = LoadConll2003(BILOU = true).fromFilename(conllTestFile)
     testNER(modelLoc, conllTestDoc, numRuns)
-
-    //val dp = trainDP(trainSentences, testSentences)
-    //val dp = parse.DepParser1Ontonotes
-    //testDP(dp, testSentences, numRuns) 
   }
 
   def testNER(modelLoc: String, testDocs: Seq[Document], numRuns: Integer) = {
     val modelURL = new java.net.URL("file://" + modelLoc)
     val namedent = new ner.StackedConllNER(SkipGramEmbedding, 100, 1.0, true, modelURL)
-    //namedent.deSerialize(modelLoc)
     println("Testing named entity recognition...")
 
     // throw away first one
     testDocs.foreach(namedent.process)
-    namedent.detailedAccuracy(testDocs)
+    namedent.test(testDocs)
 
-    var results = for (i <- 1 to numRuns) yield { namedent.detailedAccuracy(testDocs) }
+    var results = for (i <- 1 to numRuns) yield { namedent.test(testDocs) }
 
     var sentSpeed = results.map(_._1).sum / numRuns
     var tokSpeed = results.map(_._2).sum / numRuns
+    var f1 = results.map(_._3).sum / numRuns
 
     println("Average speed over " + numRuns + " trials: " + sentSpeed + " sents/sec " + tokSpeed + "toks/sec")
+    println("F1: " + f1)
   }
 }
 
@@ -214,22 +125,20 @@ object BenchDP {
     val dp = new parse.TransitionParser(new java.net.URL("file://" + modelLoc))
     
     testDP(dp, testDoc.flatMap(_.sentences), numRuns)
-
-    //val dp = trainDP(trainSentences, testSentences)
-    //val dp = parse.DepParser1Ontonotes
-    //testDP(dp, testSentences, numRuns) 
   }
 
   def testDP(dp: parse.TransitionParser, testSentences: Seq[Sentence], numRuns: Integer) = {
 
     println("Testing dependency parsing...")
 
-    var results = for (i <- 1 to numRuns) yield { dp.testString(testSentences) }//{ dp.test(testDocs) }
+    var results = for (i <- 1 to numRuns) yield { dp.test(testSentences) }
 
-    println(results)
-    //var sentSpeed = results.map(_._1).sum / numRuns
-    //var tokSpeed = results.map(_._2).sum / numRuns
+    var las = results.map(_._1).sum / numRuns
+    var uas = results.map(_._2).sum / numRuns
+    var tokSpeed = results.map(_._3).sum / numRuns
+    var sentSpeed = results.map(_._4).sum / numRuns
 
-    //println("Average speed over " + numRuns + " trials: " + sentSpeed + " sents/sec " + tokSpeed + "toks/sec")
+    println("Average speed over " + numRuns + " trials: " + sentSpeed + " sents/sec " + tokSpeed + "toks/sec")
+    println("LAS: " + las + "; UAS: " + uas)
   }
 }
