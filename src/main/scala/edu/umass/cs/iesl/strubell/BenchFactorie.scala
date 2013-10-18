@@ -36,7 +36,7 @@ object BenchPOS {
 
     var numRuns = 10
 
-    var results = for (i <- 1 to numRuns) yield { tagger.detailedAccuracy(testSentences) }
+    var results = for (i <- 1 to numRuns) yield { tagger.accuracy(testSentences) }
 
     var tokSpeed = results.map(_._3).sum / numRuns
     var tokAccuracy = results.map(_._1).sum / numRuns
@@ -80,6 +80,7 @@ object BenchNER {
     //testDocs.foreach(namedent.process)
     //namedent.test(testDocs)
 
+    // load a new document every time to get accurate timing
     var results = for (i <- 1 to numRuns) yield { namedent.test(testFiles.flatMap(LoadConll2003(BILOU = true).fromFilename(_))) }
 
     var sentSpeed = results.map(_._1).sum / numRuns
