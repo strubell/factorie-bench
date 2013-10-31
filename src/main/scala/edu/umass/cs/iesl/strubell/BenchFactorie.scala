@@ -22,7 +22,7 @@ object BenchPOS {
     var testDir = args(1)
 
     println("Loading tagger...")
-    val tagger = new pos.ForwardPOSTagger
+    val tagger = new pos.ForwardPosTagger
     tagger.deserialize(new java.io.File(modelLoc))
 
     println("Loading file lists...")
@@ -73,7 +73,7 @@ object BenchNER {
 
   def testNER(modelLoc: String, testFiles: Seq[String], numRuns: Integer) = {
     val modelURL = new java.net.URL("file://" + modelLoc)
-    val namedent = new ner.StackedConllNER(SkipGramEmbedding, 100, 1.0, true, modelURL)
+    val namedent = new ner.ConllStackedChainNer(SkipGramEmbedding, 100, 1.0, true, modelURL)
     println("Testing named entity recognition...")
 
     // throw away first one
@@ -103,12 +103,12 @@ object BenchDP {
     val testDoc = LoadOntonotes5.fromFilename(testFile)
     var numRuns = 10
     
-    val dp = new parse.TransitionParser(new java.net.URL("file://" + modelLoc))
+    val dp = new parse.TransitionBasedParser(new java.net.URL("file://" + modelLoc))
     
     testDP(dp, testDoc.flatMap(_.sentences), numRuns)
   }
 
-  def testDP(dp: parse.TransitionParser, testSentences: Seq[Sentence], numRuns: Integer) = {
+  def testDP(dp: parse.TransitionBasedParser, testSentences: Seq[Sentence], numRuns: Integer) = {
 
     println("Testing dependency parsing...")
 
