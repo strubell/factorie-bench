@@ -99,13 +99,21 @@ object BenchDP {
   def main(args: Array[String]) {
 
     val modelLoc = args(0)
-    val testFile = args(1)
-    val testDoc = LoadOntonotes5.fromFilename(testFile)
-    var numRuns = 10
+    val testDir = args(1)
     
-    val dp = new parse.TransitionBasedParser(new java.net.URL("file://" + modelLoc))
+    println("Loading file lists...")
+    var testFileList = FileUtils.getFileListFromDir(testDir, "pmd")
+
+    println("Loading documents...")
+    val testDocs = testFileList.map(LoadOntonotes5.fromFilename(_).head)
     
-    testDP(dp, testDoc.flatMap(_.sentences), numRuns)
+    //val testDoc = LoadOntonotes5.fromFilename(testFile)
+    var numRuns = 1
+    
+    //val dp = new parse.TransitionBasedParser(new java.net.URL("file://" + modelLoc))
+    val dp = parse.OntonotesTransitionBasedParser
+    
+    testDP(dp, testDocs.flatMap(_.sentences), numRuns)
   }
 
   def testDP(dp: parse.TransitionBasedParser, testSentences: Seq[Sentence], numRuns: Integer) = {
