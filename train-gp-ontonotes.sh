@@ -12,6 +12,7 @@ devDir=$1"/ontonotes-en-1.1.0/dev-pmd/"
 
 MODELNAME="OntonoteGraphBasedParser.factorie"
 trainDir="--trainDir=$trainDir"
+testDir="--testDir=$testDir"
 threads="--nThreads=20"
 model="--model=$MODELNAME"
 
