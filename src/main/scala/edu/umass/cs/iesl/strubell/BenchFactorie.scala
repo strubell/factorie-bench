@@ -110,8 +110,8 @@ object BenchDP {
     //val testDoc = LoadOntonotes5.fromFilename(testFile)
     var numRuns = 1
     
-    //val dp = new parse.TransitionBasedParser(new java.net.URL("file://" + modelLoc))
-    val dp = parse.OntonotesTransitionBasedParser
+    val dp = new parse.TransitionBasedParser(new java.net.URL("file://" + modelLoc))
+    //val dp = parse.OntonotesTransitionBasedParser
     
     testDP(dp, testDocs.flatMap(_.sentences), numRuns)
   }
