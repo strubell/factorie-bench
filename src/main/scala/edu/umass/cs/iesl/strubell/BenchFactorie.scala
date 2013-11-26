@@ -26,7 +26,7 @@ object BenchPOS {
     tagger.deserialize(new java.io.File(modelLoc))
 
     println("Loading file lists...")
-    var testFileList = FileUtils.getFileListFromDir(testDir, "pmd")
+    var testFileList = FileUtils.getFileListFromDir(testDir, "")
 
     println("Loading documents...")
     val testDocs = testFileList.map(LoadOntonotes5.fromFilename(_).head)
